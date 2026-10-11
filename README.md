@@ -47,6 +47,7 @@ GitHub repository + routes
                                       ▼
                       Visual checks + generated Playwright tests
 ```
+Live Demo Video: https://drive.google.com/file/d/1LXx85qq0YqhqytClCQ38NuyJsa6t3AKM/view?usp=sharing
 
 ## 🧰 Built with
 
