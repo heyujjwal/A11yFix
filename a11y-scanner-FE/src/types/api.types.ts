@@ -72,6 +72,9 @@ export interface FixResponse {
   createdAt?: string;
   prUrl?: string;
   verification?: FixVerification | null;
+  visual?: VisualTestResult | null;
+  testFile?: string | null;
+  testCode?: string | null;
   message?: string;
   // Optional backwards compatibility
   scanId?: string;
@@ -82,4 +85,65 @@ export interface FixResponse {
     branch?: string;
     baseBranch?: string;
   } | null;
+}
+
+export interface VisualComparison {
+  route: string;
+  before?: string | null;
+  after?: string | null;
+  diffFile?: string | null;
+  diffRatio?: number | null;
+  error?: string;
+}
+
+export interface LayoutShift {
+  route: string;
+  selector: string;
+  delta?: {
+    dx: number;
+    dy: number;
+    dw: number;
+    dh: number;
+  };
+  reason?: string;
+}
+
+export interface VisualTestSummary {
+  maxDiffRatio: number;
+  layoutShiftCount: number;
+  thresholds: {
+    failDiff: number;
+    layoutShiftPx: number;
+  };
+}
+
+export interface VisualTestResult {
+  status: 'passed' | 'failed' | 'baseline-created';
+  message?: string;
+  baselineDir?: string;
+  shots?: Array<{ route: string; file: string | null }>;
+  comparisons?: VisualComparison[];
+  layoutShifts?: LayoutShift[];
+  summary?: VisualTestSummary;
+}
+
+export interface VisualTestResponse {
+  fixId: string;
+  visual: VisualTestResult | null;
+  error?: string;
+}
+
+export interface TestGenResponse {
+  fixId: string;
+  testFile?: string;
+  testCode?: string;
+  message?: string;
+  error?: string;
+}
+
+export interface TestRunResponse {
+  fixId: string;
+  passed?: boolean;
+  output?: string;
+  error?: string;
 }

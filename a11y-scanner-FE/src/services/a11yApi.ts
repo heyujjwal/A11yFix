@@ -1,4 +1,12 @@
-import type { ScanRequestPayload, ScanResponse, IssueDetail, FixResponse } from '../types/api.types';
+import type { 
+  ScanRequestPayload, 
+  ScanResponse, 
+  IssueDetail, 
+  FixResponse,
+  VisualTestResponse,
+  TestGenResponse,
+  TestRunResponse
+} from '../types/api.types';
 
 const API_BASE = '/api';
 
@@ -82,6 +90,54 @@ export const a11yApi = {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Failed to initiate pull request creation');
+    }
+    return res.json();
+  },
+
+  async getVisualTest(fixId: string): Promise<VisualTestResponse> {
+    const res = await fetch(`${API_BASE}/fixes/${fixId}/visual-test`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to fetch visual test result');
+    }
+    return res.json();
+  },
+
+  async runVisualTest(fixId: string): Promise<VisualTestResponse> {
+    const res = await fetch(`${API_BASE}/fixes/${fixId}/visual-test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to execute visual regression test');
+    }
+    return res.json();
+  },
+
+  async generateTests(fixId: string): Promise<TestGenResponse> {
+    const res = await fetch(`${API_BASE}/fixes/${fixId}/tests/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to generate Playwright tests');
+    }
+    return res.json();
+  },
+
+  async runTests(fixId: string): Promise<TestRunResponse> {
+    const res = await fetch(`${API_BASE}/fixes/${fixId}/tests/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to run test suite');
     }
     return res.json();
   }
