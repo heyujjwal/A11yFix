@@ -67,6 +67,7 @@ export interface FixResponse {
   status: FixStatus;
   summary?: string | null;
   filePath?: string | null;
+  newContent?: string | null;
   error?: string | null;
   createdAt?: string;
   prUrl?: string;

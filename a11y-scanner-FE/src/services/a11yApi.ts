@@ -3,6 +3,14 @@ import type { ScanRequestPayload, ScanResponse, IssueDetail, FixResponse } from 
 const API_BASE = '/api';
 
 export const a11yApi = {
+  async checkHealth(): Promise<{ status: string; timestamp?: string }> {
+    const res = await fetch(`${API_BASE}/health`);
+    if (!res.ok) {
+      throw new Error('Backend server is unreachable');
+    }
+    return res.json();
+  },
+
   async startScan(payload: ScanRequestPayload): Promise<ScanResponse> {
     const res = await fetch(`${API_BASE}/scans`, {
       method: 'POST',
