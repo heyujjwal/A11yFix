@@ -1,31 +1,20 @@
 export type ScanStatus = 'queued' | 'cloning' | 'installing' | 'starting' | 'scanning' | 'completed' | 'failed';
-export type ImpactLevel = 'critical' | 'serious' | 'moderate' | 'minor';
+export type ImpactLevel = 'critical' | 'serious' | 'moderate' | 'minor' | string;
 
 export interface ScanRequestPayload {
   repoUrl: string;
-  baseBranch?: string;
-  target?: {
-    wcagVersion?: string;
-    conformanceLevel?: string;
-  };
   routes?: string[];
 }
 
 export interface ScanResponse {
   scanId: string;
   status: ScanStatus;
-  stage?: string;
-  progress?: {
-    pagesCompleted: number;
-    pagesTotal: number;
-  };
+  progress?: number;
+  repoUrl?: string;
+  appUrl?: string;
+  error?: string;
+  createdAt?: string;
   message?: string;
-  summary?: {
-    pagesScanned: number;
-    violationGroups: number;
-    affectedElements: number;
-    byImpact: Record<ImpactLevel, number>;
-  };
 }
 
 export interface IssueNode {
@@ -33,43 +22,63 @@ export interface IssueNode {
   page: string;
   selectors: string[];
   html: string;
-  failureSummary: string;
-  sourceMapping: {
+  failureSummary?: string;
+  sourceMapping?: {
     status: 'mapped' | 'unmapped';
     files: string[];
   };
-  fixStatus: string;
+  fixStatus?: string;
 }
 
 export interface IssueDetail {
   issueId: string;
-  scanId: string;
   ruleId: string;
-  title: string;
   description: string;
-  impact: ImpactLevel;
-  wcagTags: string[];
-  helpUrl: string;
-  elements: IssueNode[];
+  impact?: ImpactLevel;
+  wcagTags?: string[];
+  page: string;
+  htmlSnippet: string;
+  target?: string[];
+  helpUrl?: string;
+  failureSummary?: string;
+  title?: string;
+  scanId?: string;
+  elements?: IssueNode[];
+}
+
+export type FixStatus =
+  | 'generating'
+  | 'generated'
+  | 'applying'
+  | 'completed'
+  | 'failed'
+  | 'ready_for_pr'
+  | 'pr_in_progress'
+  | 'pr_created';
+
+export interface FixVerification {
+  clean?: boolean;
+  violationCount?: number;
+  violations?: unknown[];
 }
 
 export interface FixResponse {
   fixId: string;
-  scanId: string;
-  issueId: string;
-  status: 'generating' | 'ready_for_pr' | 'pr_in_progress' | 'pr_created' | 'failed';
-  summary?: string;
-  filesChanged?: Array<{ path: string; changeType: string }>;
-  verification?: {
-    status: 'not_run' | 'passed' | 'failed' | 'inconclusive';
-    checks?: Record<string, unknown>;
-    build?: string;
-    originalViolation?: string;
-  };
+  status: FixStatus;
+  summary?: string | null;
+  filePath?: string | null;
+  error?: string | null;
+  createdAt?: string;
+  prUrl?: string;
+  verification?: FixVerification | null;
+  message?: string;
+  // Optional backwards compatibility
+  scanId?: string;
+  issueId?: string;
   pullRequest?: {
-    number: number;
+    number?: number;
     url: string;
-    branch: string;
-    baseBranch: string;
+    branch?: string;
+    baseBranch?: string;
   } | null;
 }
