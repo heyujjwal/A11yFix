@@ -151,7 +151,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               <Sparkles className="w-4 h-4 text-indigo-400" />
               <span>How Gemma 4 AI Fixes Work</span>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs text-slate-300">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 font-semibold text-slate-100">
                   <span className="w-5 h-5 rounded-full bg-indigo-600/30 text-indigo-300 flex items-center justify-center text-[10px] font-mono">1</span>
@@ -175,7 +175,17 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 font-semibold text-slate-100">
                   <span className="w-5 h-5 rounded-full bg-indigo-600/30 text-indigo-300 flex items-center justify-center text-[10px] font-mono">3</span>
-                  <span>Pull Request & Verification</span>
+                  <span>Visual Quality Gate</span>
+                </div>
+                <p className="text-slate-400 text-[11px]">
+                  Executes Playwright pixelmatch screenshot diffing and verifies layout shift tolerance (&le;8px).
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 font-semibold text-slate-100">
+                  <span className="w-5 h-5 rounded-full bg-indigo-600/30 text-indigo-300 flex items-center justify-center text-[10px] font-mono">4</span>
+                  <span>PR & Verification</span>
                 </div>
                 <p className="text-slate-400 text-[11px]">
                   Builds the app, re-scans with axe-core to ensure 0 remaining violations, and opens a GitHub PR.

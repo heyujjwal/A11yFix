@@ -11,8 +11,11 @@ import {
   Check, 
   Sparkles,
   ShieldCheck,
-  CheckCheck
+  CheckCheck,
+  Eye,
+  Camera
 } from 'lucide-react';
+import { VisualTestPanel } from './VisualTestPanel';
 import { type FixResponse } from '../../types/api.types';
 import { a11yApi } from '../../services/a11yApi';
 
@@ -211,6 +214,16 @@ export const FixPreview: React.FC<FixPreviewProps> = ({ fixId }) => {
 
         {/* Status Pill */}
         <div className="flex items-center gap-2">
+          {fixData.visual && (
+            <span className={`text-xs px-2.5 py-1 rounded-full font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 border ${
+              fixData.visual.status === 'passed'
+                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+            }`}>
+              <Eye className="w-3 h-3" />
+              <span>Visual: {fixData.visual.status}</span>
+            </span>
+          )}
           <span className={`text-xs px-3 py-1 rounded-full font-mono font-bold uppercase tracking-wider border ${
             isCompleted 
               ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
@@ -299,6 +312,17 @@ export const FixPreview: React.FC<FixPreviewProps> = ({ fixId }) => {
         </div>
       )}
 
+      {/* Visual Regression Quality Gate & Playwright Tests */}
+      {(isGenerated || isCompleted) && (
+        <VisualTestPanel 
+          fixId={fixId} 
+          isPrCreated={isCompleted}
+          initialVisual={fixData.visual}
+          onVisualUpdate={(visual) => setFixData(prev => prev ? ({ ...prev, visual }) : prev)}
+          onTriggerPR={handleCreatePR}
+        />
+      )}
+
       {/* Generating State */}
       {isGenerating && (
         <div className="flex items-center space-x-3.5 p-5 bg-indigo-950/30 border border-indigo-500/30 rounded-xl text-xs text-indigo-200">
@@ -324,6 +348,13 @@ export const FixPreview: React.FC<FixPreviewProps> = ({ fixId }) => {
               Clicking below will create a dedicated fix branch (<code className="text-indigo-300 font-mono">a11yfix/...</code>), apply the patch, run build verification, re-evaluate with axe-core, and open an official GitHub Pull Request.
             </p>
           </div>
+
+          {!fixData.visual && (
+            <div className="p-3 bg-indigo-950/20 border border-indigo-500/20 rounded-xl text-xs text-indigo-300 flex items-center gap-2">
+              <Camera className="w-4 h-4 text-indigo-400 shrink-0" />
+              <span>Tip: Capture pre-fix baseline above before approving so the post-PR visual test can compare against original UI after server restart.</span>
+            </div>
+          )}
 
           <button 
             onClick={handleCreatePR}
